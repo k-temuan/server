@@ -1,0 +1,23 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "k-temuan server",
+  "main": "bin/http.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/k-temuan/server.git"
+  },
+  "keywords": [
+    "k-temuan",
+    "server"
+  ],
+  "author": "k-temuan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/k-temuan/server/issues"
+  },
+  "homepage": "https://github.com/k-temuan/server#readme"
+}
