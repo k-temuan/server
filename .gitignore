@@ -4,3 +4,5 @@ node_modules
 .env.test
 UserRoute.rest
 EventRoute.rest
+tests/public
+coverage

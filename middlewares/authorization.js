@@ -3,7 +3,6 @@ const { Event } = require("../models");
 module.exports = function (req, res, next) {
   const UserId = req.decoded.id;
   const EventId = req.params.id;
-
   Event.findOne({
     where: {
       id: EventId,
@@ -16,8 +15,8 @@ module.exports = function (req, res, next) {
       } else {
         let err = {
           name: "custom",
-          status: 401,
-          message: "You are not authorized",
+          status: 404,
+          message: "Event Not Found",
         };
         next(err);
       }
