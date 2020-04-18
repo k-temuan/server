@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const EventRouter = require("./event");
+const TagRouter = require("./tag");
 const UserController = require("../controllers/UserController");
 const authentication = require("../middlewares/authentication");
 
@@ -9,5 +10,6 @@ router.get("/users", UserController.findAll);
 
 router.use(authentication);
 router.use("/events", EventRouter);
+router.use("/tags", TagRouter);
 
 module.exports = router;
