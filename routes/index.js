@@ -13,7 +13,7 @@ router.get("/users", UserController.findAll);
 router.use(authentication);
 router.use("/events", EventRouter);
 router.use("/tags", TagRouter);
-router.use("/", AttendeeRouter);
+router.use("/attendees", AttendeeRouter);
 router.use("/", EventTagRouter);
 
 module.exports = router;
