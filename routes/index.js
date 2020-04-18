@@ -11,6 +11,7 @@ router.post("/login", UserController.login);
 router.get("/users", UserController.findAll);
 
 router.use(authentication);
+router.get("/users/:id", UserController.findById);
 router.use("/events", EventRouter);
 router.use("/tags", TagRouter);
 router.use("/attendees", AttendeeRouter);
