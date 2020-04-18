@@ -3,21 +3,24 @@ const { verifyToken } = require("../helpers/jwt");
 
 module.exports = function (req, res, next) {
   try {
-    const token = req.headers.token;
+    console.log("===authentication");
+    const token = req.headers.access_token;
     req.decoded = verifyToken(token);
     User.findOne({
       where: {
-        email: req.decoded.email,
+        id: req.decoded.id,
       },
     })
       .then((found) => {
         if (found) {
+          console.log("---found");
           next();
         } else {
+          console.log("---NOTfound");
           let err = {
             name: "custom",
             status: 401,
-            message: "You are not authenticated",
+            message: "Not Authorized",
           };
           next(err);
         }
@@ -25,13 +28,14 @@ module.exports = function (req, res, next) {
       })
 
       .catch((err) => {
+        console.log("---err");
         next(err);
       });
   } catch {
     let err = {
       name: "custom",
       status: 401,
-      message: "You are not authenticated",
+      message: "Not Authorized",
     };
     next(err);
   }

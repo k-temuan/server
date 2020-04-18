@@ -31,7 +31,7 @@ class EventController {
     })
       .then((events) => {
         res.status(200).json({
-          data: events,
+          events: events,
         });
       })
       .catch((err) => {
@@ -40,12 +40,12 @@ class EventController {
   }
 
   static create(req, res, next) {
+    const image_url = req.file.path;
     const {
       name,
       category,
       description,
       max_attendees,
-      image_url,
       location,
       date_time,
     } = req.body;
@@ -64,7 +64,7 @@ class EventController {
     })
       .then((response) => {
         res.status(201).json({
-          data: response,
+          event: response,
         });
       })
       .catch((err) => {
@@ -102,13 +102,13 @@ class EventController {
       .then((response) => {
         if (response) {
           res.status(200).json({
-            data: response,
+            event: response,
           });
         } else {
           let err = {
             name: "custom",
-            status: 400,
-            message: "Event not found",
+            status: 404,
+            message: "Event Not Found",
           };
           throw err;
         }
@@ -134,13 +134,19 @@ class EventController {
       });
   }
   static update(req, res, next) {
+    console.log(req.file);
+    let image_url;
+    if (req.file) {
+      image_url = req.file.path;
+    } else {
+      image_url = "";
+    }
     const EventId = req.params.id;
     const {
       name,
       category,
       description,
       max_attendees,
-      image_url,
       location,
       date_time,
     } = req.body;
@@ -178,11 +184,10 @@ class EventController {
       })
       .then((updated) => {
         res.status(200).json({
-          data: updated[1],
+          event: updated[1][0],
         });
       })
       .catch((err) => {
-        console.log(err);
         next(err);
       });
   }
@@ -204,8 +209,8 @@ class EventController {
         } else {
           let err = {
             name: "custom",
-            status: 400,
-            message: "Event not found",
+            status: 404,
+            message: "Event Not Found",
           };
           throw err;
         }
