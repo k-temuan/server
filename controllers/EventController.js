@@ -134,7 +134,6 @@ class EventController {
       });
   }
   static update(req, res, next) {
-    console.log(req.file);
     let image_url;
     if (req.file) {
       image_url = req.file.path;
