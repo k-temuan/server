@@ -7,9 +7,7 @@ class AttendeeController {
           attendees: data,
         });
       })
-      .catch((er) => {
-        next(err);
-      });
+      .catch(next);
   }
   static findById(req, res, next) {
     const AttendeeId = req.params.id;
@@ -55,8 +53,6 @@ class AttendeeController {
   }
   static update(req, res, next) {
     const confirm = req.query.confirm;
-    console.log(confirm);
-    console.log(typeof confirm);
     const AttendeeId = req.params.id;
 
     Attendee.findByPk(AttendeeId)

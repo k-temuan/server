@@ -21,12 +21,8 @@ module.exports = function (req, res, next) {
           };
           next(err);
         }
-        return null;
       })
-
-      .catch((err) => {
-        next(err);
-      });
+      .catch(next);
   } catch {
     let err = {
       name: "custom",
