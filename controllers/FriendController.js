@@ -4,10 +4,11 @@ const { Friend, User } = require("../models");
 class FriendController {
   static create(req, res, next) {
     let { id } = req.decoded;
-    let { FriendId } = req.body;
+    let { FriendId, status } = req.body;
     Friend.create({
       UserId: id,
       FriendId,
+      status,
     })
       .then((result) => {
         res.status(201).json({
@@ -131,7 +132,7 @@ class FriendController {
   }
 
   static getApprove(req, res, next) {
-    let { id } = req.body;
+    let { id } = req.decoded;
     let filtered = null;
     // obtain raw data
     Friend.findAll({
