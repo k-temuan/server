@@ -229,6 +229,19 @@ describe("User routes", () => {
             });
         });
       });
+      describe("error process due to token unavailable", () => {
+        test("it should return error with status 401", (done) => {
+          request(app)
+            .get(`/users/0`)
+            .set("access_token", access_token)
+            .end((err, res) => {
+              expect(res.statusCode).toEqual(404);
+              expect(res.body).toHaveProperty("errors", expect.any(Array));
+              expect(res.body.errors).toContain("User Not Found");
+              done();
+            });
+        });
+      });
     });
   });
 });

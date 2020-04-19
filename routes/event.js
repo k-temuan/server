@@ -5,7 +5,6 @@ const upload = require("../middlewares/multer");
 
 router.get("/", EventController.findAll);
 router.get("/:id", EventController.findById);
-router.post("/:id/join", EventController.joinEvent);
 router.post("/", upload.single("image"), EventController.create);
 router.patch(
   "/:id",

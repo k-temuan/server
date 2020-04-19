@@ -155,6 +155,20 @@ describe("Attendee Endpoints", () => {
       });
     });
 
+    describe("Update one attendee error not found", () => {
+      it("should return error not found", (done) => {
+        request(app)
+          .patch(`/attendees/0?confirm=true`)
+          .set("access_token", access_token)
+          .end((err, res) => {
+            expect(res.statusCode).toEqual(404);
+            expect(res.body).toHaveProperty("errors", expect.any(Array));
+            expect(res.body.errors).toContain("Attendee not found");
+            done();
+          });
+      });
+    });
+
     describe("Get one attendee error", () => {
       it("should return error not found", (done) => {
         request(app)

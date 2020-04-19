@@ -1,5 +1,5 @@
 const request = require('supertest')
-const { getToken } = require('../helpers/jwt') // ubah variable
+const { getToken } = require('../helpers/jwt') 
 const app = require('../app')
 const { User, sequelize } = require('../models')
 const { queryInterface } = sequelize
@@ -25,7 +25,7 @@ beforeAll((done) => {
       })
     })
     .then((user) => {
-      access_token = getToken({ id: user.id }) // ubah variable
+      access_token = getToken({ id: user.id })
       done()
     })
 })
@@ -85,7 +85,7 @@ describe('Tag Endpoints', () => {
     describe('Get one tag success', () => {
       it('should fetch a single tag', (done) => {
         request(app)
-          .get(`/tags/${tagId}`) // category id diganti jadi tagid
+          .get(`/tags/${tagId}`)
           .set('access_token', access_token)
           .end((err, res) => {
             expect(res.statusCode).toEqual(200)
@@ -102,7 +102,7 @@ describe('Tag Endpoints', () => {
           name: 'Photography',
         }
         request(app)
-          .patch(`/tags/${tagId}`) // category id diganti jadi tagid & put ganti patch
+          .patch(`/tags/${tagId}`)
           .set('access_token', access_token)
           .send(data)
           .end((err, res) => {
@@ -136,7 +136,24 @@ describe('Tag Endpoints', () => {
           .end((err, res) => {
             expect(res.statusCode).toEqual(400)
             expect(res.body).toHaveProperty('errors', expect.any(Array))
-            expect(res.body.errors).toContain('Tag name cannot be empty') // ganti error message
+            expect(res.body.errors).toContain('Tag name cannot be empty')
+            done()
+          })
+      })
+    })
+
+    describe('update tag error not found', () => {
+      it('should return tag not found', (done) => {
+        const data = {
+          name: 'Photography',
+        }
+        request(app)
+          .patch(`/tags/${tagId + 1}`)
+          .set('access_token', access_token)
+          .send(data)
+          .end((err, res) => {
+            expect(res.statusCode).toEqual(404)
+            expect(res.body).toHaveProperty('errors')
             done()
           })
       })
@@ -145,7 +162,7 @@ describe('Tag Endpoints', () => {
     describe('Get one tag error', () => {
       it('should return error not found', (done) => {
         request(app)
-          .get(`/tags/0`) // ganti id
+          .get(`/tags/0`)
           .set('access_token', access_token)
           .end((err, res) => {
             expect(res.statusCode).toEqual(404)

@@ -34,9 +34,7 @@ class EventController {
           events: events,
         })
       })
-      .catch((err) => {
-        next(err)
-      })
+      .catch(next)
   }
 
   static create(req, res, next) {
@@ -92,9 +90,7 @@ class EventController {
           })
           .catch(next)
       })
-      .catch((err) => {
-        next(err)
-      })
+      .catch(next)
   }
   static findById(req, res, next) {
     Event.findByPk(req.params.id, {
@@ -135,28 +131,10 @@ class EventController {
             status: 404,
             message: 'Event Not Found',
           }
-          throw err
+          next(err)
         }
       })
-      .catch((err) => {
-        next(err)
-      })
-  }
-  static joinEvent(req, res, next) {
-    const EventId = req.params.id
-    const UserId = req.decoded.id
-    Attendee.create({
-      EventId,
-      UserId,
-    })
-      .then((response) => {
-        res.status(201).json({
-          message: `${response.UserId} join event ${response.EventId}`,
-        })
-      })
-      .catch((err) => {
-        next(err)
-      })
+      .catch(next)
   }
   static update(req, res, next) {
     let image_url
@@ -177,110 +155,73 @@ class EventController {
     } = req.body
 
     const UserId = req.decoded.id
-    Event.findByPk(EventId)
-      .then((response) => {
-        if (response) {
-          Event.update(
-            {
-              name,
-              category,
-              description,
-              max_attendees,
-              image_url,
-              location,
-              date_time,
-              UserId,
-            },
-            {
-              where: {
-                id: EventId,
-              },
-            }
-          )
-            .then((updated) => {
-              EventTag.destroy({ where: { EventId } })
-                .then((result) => {
-                  const newTags = []
 
-                  tags.forEach((el) => {
-                    const newTag = {
-                      TagId: el,
-                      EventId,
-                    }
-                    newTags.push(newTag)
-                  })
-                  EventTag.bulkCreate(newTags)
-                    .then((result) => {
-                      Event.findByPk(EventId, {
-                        include: [
-                          {
-                            model: EventTag,
-                            include: [{ model: Tag }],
-                          },
-                        ],
-                      })
-                        .then((result) => {
-                          res.status(200).json({
-                            event: result,
-                          })
-                        })
-                        .catch(next)
+    Event.update(
+      {
+        name,
+        category,
+        description,
+        max_attendees,
+        image_url,
+        location,
+        date_time,
+        UserId,
+      },
+      {
+        where: {
+          id: EventId,
+        },
+      }
+    )
+      .then((updated) => {
+        EventTag.destroy({ where: { EventId } })
+          .then((result) => {
+            const newTags = []
+
+            tags.forEach((el) => {
+              const newTag = {
+                TagId: el,
+                EventId,
+              }
+              newTags.push(newTag)
+            })
+            EventTag.bulkCreate(newTags)
+              .then((result) => {
+                Event.findByPk(EventId, {
+                  include: [
+                    {
+                      model: EventTag,
+                      include: [{ model: Tag }],
+                    },
+                  ],
+                })
+                  .then((result) => {
+                    res.status(200).json({
+                      event: result,
                     })
-                    .catch(next)
-                })
-                .catch((err) => {
-                  next(err)
-                })
-            })
-            .catch((err) => {
-              next(err)
-            })
-        } else {
-          let err = {
-            name: 'custom',
-            status: 400,
-            message: 'Event not found',
-          }
-          next(err)
-        }
+                  })
+                  .catch(next)
+              })
+              .catch(next)
+          })
+          .catch(next)
       })
-      .catch((err) => {
-        next(err)
-      })
+      .catch(next)
   }
   static delete(req, res, next) {
     let EventId = req.params.id
 
-    Event.findOne({
+    Event.destroy({
       where: {
         id: EventId,
       },
     })
-      .then((found) => {
-        if (found) {
-          return Event.destroy({
-            where: {
-              id: EventId,
-            },
-          })
-        } else {
-          let err = {
-            name: 'custom',
-            status: 404,
-            message: 'Event Not Found',
-          }
-          throw err
-        }
-      })
-      .then((deleted) => {
+      .then((result) => {
         res.status(200).json({
           data: 'deleted',
         })
       })
-
-      .catch((err) => {
-        next(err)
-      })
+      .catch(next)
   }
 }
 

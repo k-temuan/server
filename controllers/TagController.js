@@ -8,9 +8,7 @@ class TagController {
           tags: data,
         });
       })
-      .catch((err) => {
-        next(err);
-      });
+      .catch(next);
   }
   static findById(req, res, next) {
     const TagId = req.params.id;
@@ -57,7 +55,7 @@ class TagController {
             status: 404,
             message: "Tag not found",
           };
-          throw err;
+          next(err);
         } else {
           return Tag.update(
             { name },
@@ -75,9 +73,7 @@ class TagController {
           tag: updated[1][0],
         });
       })
-      .catch((err) => {
-        next(err);
-      });
+      .catch(next);
   }
   static delete(req, res, next) {
     const TagId = req.params.id;

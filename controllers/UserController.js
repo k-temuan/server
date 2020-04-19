@@ -70,9 +70,7 @@ class UserController {
           next(err);
         }
       })
-      .catch((err) => {
-        next(err);
-      });
+      .catch(next);
   }
   static findAll(req, res, next) {
     User.findAll({
@@ -85,9 +83,7 @@ class UserController {
           users: response,
         });
       })
-      .catch((err) => {
-        next(err);
-      });
+      .catch(next);
   }
 
   static findById(req, res, next) {
@@ -100,16 +96,14 @@ class UserController {
           });
         } else {
           let err = {
-            name: "custom",
+            name: "UserNotFound",
             status: 404,
             message: "User Not Found",
           };
-          throw err;
+          next(err);
         }
       })
-      .catch((err) => {
-        next(err);
-      });
+      .catch(next);
   }
 }
 
