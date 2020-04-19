@@ -1,6 +1,10 @@
+// import from node_modules
 const router = require("express").Router();
+
+// import from controller
 const AttendeeController = require("../controllers/AttendeeController");
 
+// main
 router.get("/", AttendeeController.findAll);
 router.get("/:id", AttendeeController.findById);
 router.post("/", AttendeeController.create);
