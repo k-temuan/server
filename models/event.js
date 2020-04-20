@@ -101,6 +101,7 @@ module.exports = (sequelize, DataTypes) => {
   Event.associate = function (models) {
     Event.hasMany(models.Attendee);
     Event.hasMany(models.EventTag);
+    Event.hasMany(models.Notification);
     Event.belongsTo(models.User);
   };
   return Event;
