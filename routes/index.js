@@ -6,6 +6,7 @@ const EventRouter = require("./event");
 const TagRouter = require("./tag");
 const AttendeeRouter = require("./attendee");
 const FriendRouter = require("./friend");
+const NotificationRouter = require("./notification");
 
 // import from controllers folder
 const UserController = require("../controllers/UserController");
@@ -25,5 +26,6 @@ router.use("/friends", FriendRouter);
 router.use("/events", EventRouter);
 router.use("/tags", TagRouter);
 router.use("/attendees", AttendeeRouter);
+router.use("/notifications", NotificationRouter);
 
 module.exports = router;
