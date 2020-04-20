@@ -40,7 +40,8 @@ class FriendController {
 
   static findAll(req, res, next) {
     let { id } = req.decoded;
-    let filtered = [];
+    let filtered = null;
+    let filtered2 = [];
     Friend.findAll({
       where: {
         UserId: id,
@@ -59,18 +60,20 @@ class FriendController {
       ],
     })
       .then((result) => {
+        // filter based on status
+        filtered = result.filter((_) => true);
         // delete key to password
-        result.forEach((element) => {
+        filtered.forEach((element) => {
           let obj = {};
           obj = { ...element["dataValues"] };
           // deleting the password from include
           delete obj["User"]["dataValues"]["password"];
           delete obj["friend"]["dataValues"]["password"];
-          filtered.push(obj);
+          filtered2.push(obj);
         });
         res.status(200).json({
           message: "Successfully fetched friends data",
-          data: filtered,
+          data: filtered2,
         });
       })
       .catch(next);
@@ -266,8 +269,8 @@ class FriendController {
           res.status(200).json({
             message: "Friend request rejected",
             data: {
-              UserId,
-              FriendId: String(id),
+              UserId: Number(UserId),
+              FriendId: id,
             },
           });
         }
