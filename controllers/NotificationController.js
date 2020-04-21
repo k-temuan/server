@@ -1,9 +1,11 @@
 // import from local files
-const { Notification } = require("../models");
+const { Notification, Event, User } = require("../models");
 
 class NotificationController {
   static findAll(req, res, next) {
-    Notification.findAll()
+    Notification.findAll({
+      include: [Event, User],
+    })
       .then((result) => {
         res.status(201).json({
           message: "Successfully fetched Notifications data",
@@ -19,6 +21,7 @@ class NotificationController {
       where: {
         id,
       },
+      include: [Event, User],
     })
       .then((found) => {
         if (found) {
@@ -38,13 +41,84 @@ class NotificationController {
   }
 
   static create(req, res, next) {
-    // resume from here
     let { UserId, EventId } = req.body;
+    // find the detailed event information first
+    Event.findOne({
+      where: {
+        id: EventId,
+      },
+    })
+      .then((result) => {
+        if (result) {
+          let notifMessage = `There is ${result.name} event on ${result.date_time} at ${result.location}`;
+          return Notification.create({
+            EventId,
+            UserId,
+            message: notifMessage,
+          });
+        } else {
+          return { notFound: true };
+        }
+      })
+      .then((result) => {
+        if (!result.notFound) {
+          res.status(201).json({
+            msg: "Successfully created a new Notification",
+          });
+        } else {
+          next({
+            name: "custom",
+            status: 404,
+            message: "Event with matching EventId not found",
+          });
+        }
+      })
+      .catch(next);
   }
 
-  static update(req, res, next) {}
+  static update(req, res, next) {
+    let { UserId, EventId, message } = req.body;
+    let { id } = req.params;
+    Notification.update(
+      {
+        EventId,
+        UserId,
+        message,
+      },
+      {
+        where: {
+          id,
+        },
+      }
+    )
+      .then(() => {
+        res.status(200).json({
+          message: "Successfully updated a Notification",
+          data: {
+            id,
+            UserId,
+            EventId,
+            message,
+          },
+        });
+      })
+      .catch(next);
+  }
 
-  static delete(req, res, next) {}
+  static delete(req, res, next) {
+    let { id } = req.params;
+    Notification.destroy({
+      where: {
+        id,
+      },
+    })
+      .then((_) => {
+        res.status(200).json({
+          message: "Notification deleted",
+        });
+      })
+      .catch(next);
+  }
 }
 
 module.exports = NotificationController;

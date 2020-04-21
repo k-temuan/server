@@ -38,7 +38,12 @@ class EventController {
   }
 
   static create(req, res, next) {
-    const image_url = req.file.path;
+    let image_url = null;
+    if (req.body.image_url) {
+      image_url = req.body.image_url;
+    } else {
+      image_url = req.file.path;
+    }
     const {
       name,
       category,
@@ -64,7 +69,7 @@ class EventController {
         const eventId = response.id;
         const eventTags = [];
         parsedTags.forEach((el) => {
-          const eventTag = {
+          let eventTag = {
             TagId: el,
             EventId: eventId,
           };
