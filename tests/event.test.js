@@ -107,6 +107,39 @@ describe("Events Endpoints", () => {
             done();
           });
       });
+      it("should create a new event using req.body to handle image_url", (done) => {
+        request(app)
+          .post(`/events`)
+          .set("access_token", access_token)
+          .field(
+            "image_url",
+            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1868&q=80"
+          )
+          .field("name", "Mabar DOTA 2")
+          .field("category", "game")
+          .field("description", "Mabar DOTA 2 area Jakarta")
+          .field("max_attendees", 10)
+          .field("location", "Jakarta")
+          .field("date_time", "2020-05-10 11:00")
+          .field("tags", tags)
+          .end((err, res) => {
+            expect(res.statusCode).toEqual(201);
+            expect(res.body).toHaveProperty("event");
+            expect(res.body.event).toHaveProperty("name", "Mabar DOTA 2");
+            expect(res.body.event).toHaveProperty("category", "game");
+            expect(res.body.event).toHaveProperty(
+              "description",
+              "Mabar DOTA 2 area Jakarta"
+            );
+            expect(res.body.event).toHaveProperty("image_url");
+            expect(res.body.event).toHaveProperty("max_attendees", 10);
+            expect(res.body.event).toHaveProperty("location", "Jakarta");
+            expect(res.body.event).toHaveProperty("date_time");
+            expect(res.body.event).toHaveProperty("EventTags");
+            eventId = res.body.event.id;
+            done();
+          });
+      });
     });
     describe("Get one event success", () => {
       it("should fetch a single event", (done) => {

@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       isConfirm: {
         type: DataTypes.BOOLEAN,
-        defaultValue: null,
+        defaultValue: true,
       },
     },
     { sequelize, modelName: "Attendee" }
