@@ -95,7 +95,6 @@ beforeAll((done) => {
     })
     .then(({ id }) => {
       deletedId = id;
-      console.log(deletedId, "THIS IS DELETE ID");
     })
     .catch(done)
     .finally((_) => done());
@@ -376,7 +375,6 @@ describe("Notification routes", () => {
                 "UserId",
                 notification_user_edited["id"]
               );
-              console.log(res.body, "THIS IS THE CURRENT DATA");
               expect(res.body.data).toHaveProperty("message", "Edited message");
               done();
             });
