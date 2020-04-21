@@ -84,43 +84,87 @@ class NotificationController {
   static update(req, res, next) {
     let { UserId, EventId, message } = req.body;
     let { id } = req.params;
-    Notification.update(
-      {
-        EventId,
-        UserId,
-        message,
+    // check whether or not the id actually exist
+    Notification.findOne({
+      where: {
+        id,
       },
-      {
-        where: {
-          id,
-        },
-      }
-    )
-      .then(() => {
-        res.status(200).json({
-          message: "Successfully updated a Notification",
-          data: {
-            id,
-            UserId,
-            EventId,
-            message,
-          },
-        });
+    })
+      .then((found) => {
+        if (found) {
+          return Notification.update(
+            {
+              EventId,
+              UserId,
+              message,
+            },
+            {
+              where: {
+                id,
+              },
+            }
+          );
+        } else {
+          return { notFound: true };
+        }
+      })
+      .then(({ notFound }) => {
+        if (notFound) {
+          next({
+            name: "custom",
+            status: 404,
+            message: "Event with matching EventId not found",
+          });
+        } else {
+          res.status(200).json({
+            message: "Successfully updated a Notification",
+            data: {
+              id: Number(id),
+              UserId,
+              EventId,
+              message,
+            },
+          });
+        }
       })
       .catch(next);
   }
 
   static delete(req, res, next) {
     let { id } = req.params;
-    Notification.destroy({
+    let deleted = null;
+    // check whether or not the notification exist
+    Notification.findOne({
       where: {
         id,
       },
     })
-      .then((_) => {
-        res.status(200).json({
-          message: "Notification deleted",
-        });
+      .then((found) => {
+        if (found) {
+          // absorb the value of the deleted Notification
+          deleted = { ...found["dataValues"] };
+          return Notification.destroy({
+            where: {
+              id,
+            },
+          });
+        } else {
+          return { notFound: true };
+        }
+      })
+      .then(({ notFound }) => {
+        if (notFound) {
+          next({
+            name: "custom",
+            status: 404,
+            message: "Event with matching EventId not found",
+          });
+        } else {
+          res.status(200).json({
+            message: "Notification deleted",
+            data: deleted,
+          });
+        }
       })
       .catch(next);
   }

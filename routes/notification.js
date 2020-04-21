@@ -3,7 +3,6 @@ const router = require("express").Router();
 
 // import from local files
 const NotificationController = require("../controllers/NotificationController");
-const authorization = require("../middlewares/authorization");
 
 // main
 router.get("/", NotificationController.findAll);
