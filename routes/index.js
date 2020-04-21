@@ -10,14 +10,23 @@ const NotificationRouter = require("./notification");
 
 // import from controllers folder
 const UserController = require("../controllers/UserController");
+const EventController = require("../controllers/EventController");
+const TagController = require("../controllers/TagController");
 
 // import from middlewares folder
 const authentication = require("../middlewares/authentication");
 
-// main
+// doesn't need authentification
+// user-related
 router.post("/register", UserController.register);
 router.post("/login", UserController.login);
 router.get("/users", UserController.findAll);
+
+// event-related
+router.get("/events", EventController.findAll);
+router.get("/events/:id", EventController.findById);
+router.get("/tags", TagController.findAll);
+router.get("/tags/:id", TagController.findById);
 
 // need authentification
 router.use(authentication);

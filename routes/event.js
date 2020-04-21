@@ -9,8 +9,6 @@ const authorization = require("../middlewares/authorization");
 const upload = require("../middlewares/multer");
 
 // main
-router.get("/", EventController.findAll);
-router.get("/:id", EventController.findById);
 router.post("/", upload.single("image"), EventController.create);
 router.patch(
   "/:id",
