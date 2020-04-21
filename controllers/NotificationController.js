@@ -3,11 +3,15 @@ const { Notification, Event, User } = require("../models");
 
 class NotificationController {
   static findAll(req, res, next) {
+    let { id } = req.decoded;
     Notification.findAll({
+      where: {
+        id,
+      },
       include: [Event, User],
     })
       .then((result) => {
-        res.status(201).json({
+        res.status(200).json({
           message: "Successfully fetched Notifications data",
           data: result,
         });
@@ -63,7 +67,8 @@ class NotificationController {
       .then((result) => {
         if (!result.notFound) {
           res.status(201).json({
-            msg: "Successfully created a new Notification",
+            message: "Successfully created a new Notification",
+            data: result,
           });
         } else {
           next({

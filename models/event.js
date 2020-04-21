@@ -78,7 +78,7 @@ module.exports = (sequelize, DataTypes) => {
       date_time: DataTypes.DATE,
       status: {
         type: DataTypes.BOOLEAN,
-        defaultValue: false,
+        defaultValue: true,
       },
       UserId: DataTypes.INTEGER,
     },
