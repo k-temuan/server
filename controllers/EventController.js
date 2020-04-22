@@ -112,7 +112,7 @@ class EventController {
           include: [
             {
               model: Tag,
-              attributes: ["name"],
+              attributes: ["id", "name"],
             },
           ],
         },
