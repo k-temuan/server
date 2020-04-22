@@ -1,3 +1,4 @@
+// import from local files
 const { User } = require("../models");
 const { getToken } = require("../helpers/jwt");
 const { checkPassword } = require("../helpers/bcrypt");

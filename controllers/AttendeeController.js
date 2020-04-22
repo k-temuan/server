@@ -1,4 +1,10 @@
-const { Attendee, Event } = require("../models");
+// import from node_modules
+const moment_timezone = require("moment-timezone");
+
+// import from local files
+const { Attendee, Event, User } = require("../models");
+const { sendEmail } = require("../helpers/axios");
+
 class AttendeeController {
   static findAll(req, res, next) {
     Attendee.findAll({ include: [Event] })
@@ -116,6 +122,52 @@ class AttendeeController {
       .catch((err) => {
         next(err);
       });
+  }
+
+  static sendEmail(req, res, next) {
+    // find the attendee detail first
+    let { id } = req.params;
+    Attendee.findOne({
+      where: {
+        id,
+      },
+      include: [Event, User],
+    })
+      .then(({ Event, User }) => {
+        sendEmail.post("/mail", {
+          to: User["dataValues"]["email"],
+          subject: `You just joined a new Event`,
+          html: `
+          <div style="box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); transition: 0.3s;">
+            <img src="${Event.image_url}" alt="Event image" style="width:100%">
+          <div style="padding: 2px 16px;">
+            <h2><b>${User["dataValues"]["firstname"]} ${
+            User["dataValues"]["lastname"]
+          }</b></h2>
+            <p>You successfully joined a new Event.</p>
+            <p>The details are:</p>
+            <ul>
+              <li>Name        : ${Event["dataValues"]["name"]}</li>
+              <li>Category    : ${Event["dataValues"]["category"]}</li>
+              <li>Description : ${Event["dataValues"]["description"]}</li>
+              <li>Location    : ${Event["dataValues"]["location"]}</li>
+              <li>Date/Time   : ${moment_timezone(Event.date_time)
+                .tz("Asia/Jakarta")
+                .format("l")}</li>
+            </ul>
+            <p>Remember to free up your schedule ang get excited :)</p>
+          </div>
+          <img src="https://k-temuan.herokuapp.com/public/logo.png" alt="Footer Logo" style="width:100%">
+          </div>       
+         `,
+          company: "K-temuan",
+          sendername: "K-temuan Reminder Bot",
+        });
+        res.status(200).json({
+          message: `Successfully send email to ${User["dataValues"]["email"]}`,
+        });
+      })
+      .catch(next);
   }
 }
 module.exports = AttendeeController;
