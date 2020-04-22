@@ -144,84 +144,206 @@ class EventController {
       .catch(next);
   }
   static update(req, res, next) {
-    // find the updated data first
-    // const EventId = req.params.id;
-    const { id: EventId } = req.params;
     let image_url;
-    let parsedTags;
-    Event.find({
-      where: {
-        id: EventId,
-      },
-    })
-      .then((found) => {
-        if (req.file) {
-          image_url = req.file.path;
-        } else {
-          image_url = found.image_url;
-        }
-        const {
+    if (req.file) {
+      image_url = req.file.path;
+    }
+
+    const EventId = req.params.id;
+    const {
+      name,
+      category,
+      description,
+      max_attendees,
+      location,
+      date_time,
+      tags,
+    } = req.body;
+    let parsedTags = JSON.parse(tags);
+
+    const UserId = req.decoded.id;
+
+    if (image_url) {
+      Event.update(
+        {
           name,
           category,
           description,
           max_attendees,
+          image_url,
           location,
           date_time,
-          tags,
-        } = req.body;
-        parsedTags = JSON.parse(tags);
-        const UserId = req.decoded.id;
-        return Event.update(
-          {
-            name,
-            category,
-            description,
-            max_attendees,
-            image_url,
-            location,
-            date_time,
-            UserId,
+          UserId,
+        },
+        {
+          where: {
+            id: EventId,
           },
-          {
-            where: {
-              id: EventId,
-            },
-          }
-        );
-      })
-      .then((updated) => {
-        EventTag.destroy({ where: { EventId } })
-          .then((result) => {
-            const newTags = [];
-            parsedTags.forEach((el) => {
-              const newTag = {
-                TagId: el,
-                EventId,
-              };
-              newTags.push(newTag);
-            });
-            EventTag.bulkCreate(newTags)
-              .then((result) => {
-                Event.findByPk(EventId, {
-                  include: [
-                    {
-                      model: EventTag,
-                      include: [{ model: Tag }],
-                    },
-                  ],
-                })
-                  .then((result) => {
-                    res.status(200).json({
-                      event: result,
-                    });
+        }
+      )
+        .then((updated) => {
+          EventTag.destroy({ where: { EventId } })
+            .then((result) => {
+              const newTags = [];
+              parsedTags.forEach((el) => {
+                const newTag = {
+                  TagId: el,
+                  EventId,
+                };
+                newTags.push(newTag);
+              });
+              EventTag.bulkCreate(newTags)
+                .then((result) => {
+                  Event.findByPk(EventId, {
+                    include: [
+                      {
+                        model: EventTag,
+                        include: [{ model: Tag }],
+                      },
+                    ],
                   })
-                  .catch(next);
-              })
-              .catch(next);
-          })
-          .catch(next);
-      })
-      .catch(next);
+                    .then((result) => {
+                      res.status(200).json({
+                        event: result,
+                      });
+                    })
+                    .catch(next);
+                })
+                .catch(next);
+            })
+            .catch(next);
+        })
+        .catch(next);
+    } else {
+      Event.update(
+        {
+          name,
+          category,
+          description,
+          max_attendees,
+          // image_url, DISINI ENGGA ADA IMAGE URL KETIKA ENGGA DIUPLOAD GAMBARNYA
+          location,
+          date_time,
+          UserId,
+        },
+        {
+          where: {
+            id: EventId,
+          },
+        }
+      )
+        .then((updated) => {
+          EventTag.destroy({ where: { EventId } })
+            .then((result) => {
+              const newTags = [];
+              parsedTags.forEach((el) => {
+                const newTag = {
+                  TagId: el,
+                  EventId,
+                };
+                newTags.push(newTag);
+              });
+              EventTag.bulkCreate(newTags)
+                .then((result) => {
+                  Event.findByPk(EventId, {
+                    include: [
+                      {
+                        model: EventTag,
+                        include: [{ model: Tag }],
+                      },
+                    ],
+                  })
+                    .then((result) => {
+                      res.status(200).json({
+                        event: result,
+                      });
+                    })
+                    .catch(next);
+                })
+                .catch(next);
+            })
+            .catch(next);
+        })
+        .catch(next);
+    }
+    // // find the updated data first
+    // // const EventId = req.params.id;
+    // const { id: EventId } = req.params;
+    // let image_url;
+    // let parsedTags;
+    // Event.find({
+    //   where: {
+    //     id: EventId,
+    //   },
+    // })
+    //   .then((found) => {
+    //     if (req.file) {
+    //       image_url = req.file.path;
+    //     } else {
+    //       image_url = found.image_url;
+    //     }
+    //     const {
+    //       name,
+    //       category,
+    //       description,
+    //       max_attendees,
+    //       location,
+    //       date_time,
+    //       tags,
+    //     } = req.body;
+    //     parsedTags = JSON.parse(tags);
+    //     const UserId = req.decoded.id;
+    //     return Event.update(
+    //       {
+    //         name,
+    //         category,
+    //         description,
+    //         max_attendees,
+    //         image_url,
+    //         location,
+    //         date_time,
+    //         UserId,
+    //       },
+    //       {
+    //         where: {
+    //           id: EventId,
+    //         },
+    //       }
+    //     );
+    //   })
+    //   .then((updated) => {
+    //     EventTag.destroy({ where: { EventId } })
+    //       .then((result) => {
+    //         const newTags = [];
+    //         parsedTags.forEach((el) => {
+    //           const newTag = {
+    //             TagId: el,
+    //             EventId,
+    //           };
+    //           newTags.push(newTag);
+    //         });
+    //         EventTag.bulkCreate(newTags)
+    //           .then((result) => {
+    //             Event.findByPk(EventId, {
+    //               include: [
+    //                 {
+    //                   model: EventTag,
+    //                   include: [{ model: Tag }],
+    //                 },
+    //               ],
+    //             })
+    //               .then((result) => {
+    //                 res.status(200).json({
+    //                   event: result,
+    //                 });
+    //               })
+    //               .catch(next);
+    //           })
+    //           .catch(next);
+    //       })
+    //       .catch(next);
+    //   })
+    //   .catch(next);
   }
   static delete(req, res, next) {
     let EventId = req.params.id;
