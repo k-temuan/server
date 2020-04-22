@@ -7,7 +7,8 @@
     "dev": "NODE_ENV=development nodemon bin/http.js",
     "test": "NODE_ENV=test jest --detectOpenHandles --runInBand --forceExit --coverage",
     "start": "node bin/http.js",
-    "scheduler": "NODE_ENV=development node bin/scheduler.js"
+    "scheduler": "node bin/scheduler.js",
+    "cron": "NODE_ENV=development node bin/scheduler.js"
   },
   "repository": {
     "type": "git",
