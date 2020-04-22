@@ -8,7 +8,7 @@ if (process.env.NODE_ENV === "development") {
 const moment_timezone = require("moment-timezone");
 
 // import from local files
-const { sequelize, Attendee, Event, Notification } = require("../models");
+const { Attendee, Event, Notification } = require("../models");
 
 const start = async () => {
   // STEP 1: Giving notifications for events that occur h-1
@@ -22,7 +22,7 @@ const start = async () => {
 
   // generate date.now and change it to tomorrow
   let comparedDate = moment_timezone("11/12/2020", "DD/MM/YYYY", true) // uncomment this for testing
-  // let comparedDate = moment_timezone() // uncomment this for production
+    // let comparedDate = moment_timezone() // uncomment this for production
     .add(1, "day")
     .tz("Asia/Jakarta")
     .format("l");
@@ -39,7 +39,6 @@ const start = async () => {
       });
     }
   });
-
 
   // STEP 2: Check for events that is already past their date_time and change its status to false
   let eventListRaw = await Event.findAll();
@@ -65,25 +64,25 @@ const start = async () => {
     }) => {
       let tempDate = moment_timezone(date_time).tz("Asia/Jakarta").format("l");
       // trigger if status === true
-      console.log(
-        `THIS IS THE ONE IN THE DATABASE",
-        id : ${id},
-        status : ${status}, 
-        date_time : ${date_time},
-        name : ${name},
-        category : ${category},
-        description : ${description},
-        max_attendees : ${max_attendees},
-        image_url : ${image_url},
-        location : ${location},
-        UserId : ${UserId},
-        tempDate : ${tempDate}
-        `
-      );
-      console.log(`
-      THIS IS THE COMPARED DATE", 
-      comparedEventDate : ${comparedEventDate}
-      `);
+      // console.log(
+      //   `THIS IS THE ONE IN THE DATABASE",
+      //   id : ${id},
+      //   status : ${status},
+      //   date_time : ${date_time},
+      //   name : ${name},
+      //   category : ${category},
+      //   description : ${description},
+      //   max_attendees : ${max_attendees},
+      //   image_url : ${image_url},
+      //   location : ${location},
+      //   UserId : ${UserId},
+      //   tempDate : ${tempDate}
+      //   `
+      // );
+      // console.log(`
+      // THIS IS THE COMPARED DATE",
+      // comparedEventDate : ${comparedEventDate}
+      // `);
       if (status && tempDate > comparedEventDate) {
         // change status to false
         console.log(`
@@ -114,6 +113,8 @@ const start = async () => {
   );
 };
 
-cron.schedule("* * * * *", () => {
-  start();
-});
+// cron.schedule("* * * * *", () => {
+//   start();
+// });
+
+start();
