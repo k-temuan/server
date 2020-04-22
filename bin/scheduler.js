@@ -21,8 +21,8 @@ const start = async () => {
   let AttendeeList = AttendeeListRaw.map((el) => el["dataValues"]);
 
   // generate date.now and change it to tomorrow
-  let comparedDate = moment_timezone("11/12/2020", "DD/MM/YYYY", true) // uncomment this for testing
-    // let comparedDate = moment_timezone() // uncomment this for production
+  // let comparedDate = moment_timezone("11/12/2020", "DD/MM/YYYY", true) // uncomment this for testing
+  let comparedDate = moment_timezone() // uncomment this for production
     .add(1, "day")
     .tz("Asia/Jakarta")
     .format("l");
@@ -45,8 +45,8 @@ const start = async () => {
   // only get the datavalues key from Attendees
   let eventList = eventListRaw.map((el) => el["dataValues"]);
   // check for time
-  let comparedEventDate = moment_timezone("11/12/2020", "DD/MM/YYYY", true) // uncomment this for testing
-    // let comparedEventDate = moment_timezone() // uncomment this for production
+  // let comparedEventDate = moment_timezone("11/12/2020", "DD/MM/YYYY", true) // uncomment this for testing
+  let comparedEventDate = moment_timezone() // uncomment this for production
     .tz("Asia/Jakarta")
     .format("l");
   eventList.forEach(
