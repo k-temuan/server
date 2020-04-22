@@ -70,7 +70,7 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
-      photo_url: DataTypes.STRING,
+      photo_url: DataTypes.TEXT,
     },
     {
       hooks: {

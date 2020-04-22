@@ -15,16 +15,16 @@ module.exports = {
         type: Sequelize.STRING
       },
       description: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       max_attendees: {
         type: Sequelize.INTEGER
       },
       image_url: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       location: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       date_time: {
         type: Sequelize.DATE
