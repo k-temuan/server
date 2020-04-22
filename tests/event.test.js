@@ -367,10 +367,10 @@ describe("Events Endpoints", () => {
           });
       });
     });
-    describe("Get one event error Not Authorized", () => {
+    describe("Delete one event error Not Authorized", () => {
       it("should return error Not Authorized", (done) => {
         request(app)
-          .get(`/events/${eventId}`)
+          .delete(`/events/${eventId}`)
           .set("access_token", expired_access_token)
           .end((err, res) => {
             expect(res.statusCode).toEqual(401);
