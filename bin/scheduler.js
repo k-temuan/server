@@ -23,7 +23,7 @@ const start = async () => {
 
   // generate date.now and change it to tomorrow
   // let comparedDate = moment_timezone("11/12/2020", "DD/MM/YYYY", true) // uncomment this for testing
-    let comparedDate = moment_timezone() // uncomment this for production
+  let comparedDate = moment_timezone() // uncomment this for production
     .add(1, "day")
     .tz("Asia/Jakarta")
     .format("l");
@@ -139,8 +139,8 @@ const start = async () => {
   );
 };
 
-cron.schedule("* * * * *", () => {
-  start();
-});
+// cron.schedule("* * * * *", () => {
+//   start();
+// });
 
-// start();
+start();
