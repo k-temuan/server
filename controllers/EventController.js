@@ -144,43 +144,51 @@ class EventController {
       .catch(next);
   }
   static update(req, res, next) {
+    // find the updated data first
+    // const EventId = req.params.id;
+    const { id: EventId } = req.params;
     let image_url;
-    if (req.file) {
-      image_url = req.file.path;
-    } else {
-      image_url = "";
-    }
-    const EventId = req.params.id;
-    const {
-      name,
-      category,
-      description,
-      max_attendees,
-      location,
-      date_time,
-      tags,
-    } = req.body;
-    let parsedTags = JSON.parse(tags);
-
-    const UserId = req.decoded.id;
-
-    Event.update(
-      {
-        name,
-        category,
-        description,
-        max_attendees,
-        image_url,
-        location,
-        date_time,
-        UserId,
+    let parsedTags;
+    Event.find({
+      where: {
+        id: EventId,
       },
-      {
-        where: {
-          id: EventId,
-        },
-      }
-    )
+    })
+      .then((found) => {
+        if (req.file) {
+          image_url = req.file.path;
+        } else {
+          image_url = found.image_url;
+        }
+        const {
+          name,
+          category,
+          description,
+          max_attendees,
+          location,
+          date_time,
+          tags,
+        } = req.body;
+        parsedTags = JSON.parse(tags);
+        const UserId = req.decoded.id;
+        return Event.update(
+          {
+            name,
+            category,
+            description,
+            max_attendees,
+            image_url,
+            location,
+            date_time,
+            UserId,
+          },
+          {
+            where: {
+              id: EventId,
+            },
+          }
+        );
+      })
       .then((updated) => {
         EventTag.destroy({ where: { EventId } })
           .then((result) => {
