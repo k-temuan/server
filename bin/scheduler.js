@@ -8,25 +8,26 @@ if (process.env.NODE_ENV === "development") {
 const moment_timezone = require("moment-timezone");
 
 // import from local files
-const { Attendee, Event, Notification } = require("../models");
+const { Attendee, Event, Notification, User } = require("../models");
+const { sendEmail } = require("../helpers/axios");
 
 const start = async () => {
   // STEP 1: Giving notifications for events that occur h-1
 
   // get all of the Attendees data
   let AttendeeListRaw = await Attendee.findAll({
-    include: [Event],
+    include: [Event, User],
   });
   // only get the datavalues key from Attendees
   let AttendeeList = AttendeeListRaw.map((el) => el["dataValues"]);
 
   // generate date.now and change it to tomorrow
   // let comparedDate = moment_timezone("11/12/2020", "DD/MM/YYYY", true) // uncomment this for testing
-  let comparedDate = moment_timezone() // uncomment this for production
+    let comparedDate = moment_timezone() // uncomment this for production
     .add(1, "day")
     .tz("Asia/Jakarta")
     .format("l");
-  AttendeeList.forEach(({ UserId, EventId, Event }) => {
+  AttendeeList.forEach(({ UserId, EventId, Event, User }) => {
     let tempEventDate = moment_timezone(Event.date_time)
       .tz("Asia/Jakarta")
       .format("l");
@@ -36,6 +37,31 @@ const start = async () => {
         EventId,
         UserId,
         message: `There is ${Event.name} event on ${Event.date_time} at ${Event.location}`,
+      });
+      sendEmail.post("/mail", {
+        to: User["dataValues"]["email"],
+        subject: `Reminder regarding your upcoming event`,
+        html: `
+        <div style="box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); transition: 0.3s;">
+          <img src="${Event.image_url}" alt="Event image" style="width:100%">
+        <div style="padding: 2px 16px;">
+          <h4><b>${User["dataValues"]["firstname"]} ${User["dataValues"]["lastname"]}</b></h4>
+          <p>Don't forget about your event, it is happening tomorrow.</p>
+          <p>The details are:</p>
+          <ul>
+            <li>name        : ${Event["dataValues"]["name"]}</li>
+            <li>category    : ${Event["dataValues"]["category"]}</li>
+            <li>description : ${Event["dataValues"]["description"]}</li>
+            <li>location    : ${Event["dataValues"]["location"]}</li>
+            <li>date/time   : ${tempEventDate}</li>
+          </ul>
+          <p>Remember to have fun and make new friends :)</p>
+        </div>
+        <img src="https://k-temuan.herokuapp.com/public/logo.png" alt="Footer Logo" style="width:100%">
+        </div>       
+       `,
+        company: "K-temuan",
+        sendername: "K-temuan Reminder Bot",
       });
     }
   });
@@ -113,8 +139,8 @@ const start = async () => {
   );
 };
 
-// cron.schedule("* * * * *", () => {
-//   start();
-// });
+cron.schedule("* * * * *", () => {
+  start();
+});
 
-start();
+// start();
