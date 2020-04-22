@@ -5,6 +5,7 @@ const router = require("express").Router();
 const AttendeeController = require("../controllers/AttendeeController");
 
 // main
+router.post("/email/:id", AttendeeController.sendEmail);
 router.get("/", AttendeeController.findAll);
 router.get("/:id", AttendeeController.findById);
 router.post("/", AttendeeController.create);

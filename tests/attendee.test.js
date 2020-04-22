@@ -128,10 +128,10 @@ describe("Attendee Endpoints", () => {
       });
     });
 
-    describe("Delete one attendee success", () => {
-      it("should delete a single attendee", (done) => {
+    describe("Send an email based on one attendee success", () => {
+      it("should send an email and return a successful email sent confirmation", (done) => {
         request(app)
-          .delete(`/attendees/${attendeeId}`)
+          .post(`/attendees/email/${attendeeId}`)
           .set("access_token", access_token)
           .end((err, res) => {
             expect(res.statusCode).toEqual(200);
@@ -140,6 +140,19 @@ describe("Attendee Endpoints", () => {
       });
     });
   });
+
+  describe("Delete one attendee success", () => {
+    it("should delete a single attendee", (done) => {
+      request(app)
+        .delete(`/attendees/${attendeeId}`)
+        .set("access_token", access_token)
+        .end((err, res) => {
+          expect(res.statusCode).toEqual(200);
+          done();
+        });
+    });
+  });
+  
   describe("error process", () => {
     describe("create attendee", () => {
       it("should return validation error", (done) => {

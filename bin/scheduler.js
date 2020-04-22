@@ -45,15 +45,15 @@ const start = async () => {
         <div style="box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); transition: 0.3s;">
           <img src="${Event.image_url}" alt="Event image" style="width:100%">
         <div style="padding: 2px 16px;">
-          <h4><b>${User["dataValues"]["firstname"]} ${User["dataValues"]["lastname"]}</b></h4>
+          <h2><b>${User["dataValues"]["firstname"]} ${User["dataValues"]["lastname"]}</b></h2>
           <p>Don't forget about your event, it is happening tomorrow.</p>
           <p>The details are:</p>
           <ul>
-            <li>name        : ${Event["dataValues"]["name"]}</li>
-            <li>category    : ${Event["dataValues"]["category"]}</li>
-            <li>description : ${Event["dataValues"]["description"]}</li>
-            <li>location    : ${Event["dataValues"]["location"]}</li>
-            <li>date/time   : ${tempEventDate}</li>
+            <li>Name        : ${Event["dataValues"]["name"]}</li>
+            <li>Category    : ${Event["dataValues"]["category"]}</li>
+            <li>Description : ${Event["dataValues"]["description"]}</li>
+            <li>Location    : ${Event["dataValues"]["location"]}</li>
+            <li>Date/Time   : ${tempEventDate}</li>
           </ul>
           <p>Remember to have fun and make new friends :)</p>
         </div>

@@ -1,4 +1,9 @@
+// import from node_modules
+const moment_timezone = require("moment-timezone");
+
+// import from local files
 const { Event, User, Tag, EventTag, Attendee } = require("../models");
+const { sendEmail } = require("../helpers/axios");
 
 class EventController {
   static findAll(req, res, next) {
@@ -13,6 +18,7 @@ class EventController {
         },
         {
           model: EventTag,
+          order: [["date_time", "DESC"]],
           attributes: ["id", "EventId", "TagId"],
           include: [
             {
@@ -41,6 +47,8 @@ class EventController {
   }
 
   static create(req, res, next) {
+    // initiate absorption of userData
+    let userData = {};
     let image_url = null;
     if (req.body.image_url) {
       image_url = req.body.image_url;
@@ -58,40 +66,88 @@ class EventController {
     } = req.body;
     const UserId = req.decoded.id;
     let parsedTags = JSON.parse(tags);
-    Event.create({
-      name,
-      category,
-      description,
-      max_attendees,
-      image_url,
-      location,
-      date_time,
-      UserId,
+    User.findOne({
+      where: {
+        id: UserId,
+      },
     })
-      .then((response) => {
-        const eventId = response.id;
-        const eventTags = [];
-        parsedTags.forEach((el) => {
-          let eventTag = {
-            TagId: el,
-            EventId: eventId,
-          };
-          eventTags.push(eventTag);
-        });
-        EventTag.bulkCreate(eventTags)
-          .then((result) => {
-            Event.findByPk(eventId, {
-              include: [
-                {
-                  model: EventTag,
-                  include: [{ model: Tag }],
-                },
-              ],
-            })
+      .then((result) => {
+        userData = { ...result };
+        Event.create({
+          name,
+          category,
+          description,
+          max_attendees,
+          image_url,
+          location,
+          date_time,
+          UserId,
+        })
+          .then((response) => {
+            const eventId = response.id;
+            const eventTags = [];
+            parsedTags.forEach((el) => {
+              let eventTag = {
+                TagId: el,
+                EventId: eventId,
+              };
+              eventTags.push(eventTag);
+            });
+            EventTag.bulkCreate(eventTags)
               .then((result) => {
-                res.status(201).json({
-                  event: result,
-                });
+                Event.findByPk(eventId, {
+                  include: [
+                    {
+                      model: EventTag,
+                      include: [{ model: Tag }],
+                    },
+                  ],
+                })
+                  .then((result) => {
+                    // send email here
+                    sendEmail.post("/mail", {
+                      to: userData["dataValues"]["email"],
+                      subject: `You just created a new Event`,
+                      html: `
+                    <div style="box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); transition: 0.3s;">
+                      <img src="${
+                        result.image_url
+                      }" alt="Event image" style="width:100%">
+                    <div style="padding: 2px 16px;">
+                    <h2><b>
+                    ${userData["dataValues"]["firstname"]} ${
+                        userData["dataValues"]["lastname"]
+                      }</b></h2>
+                      <p>You successfully created a new Event.</p>
+                      <p>The details are:</p>
+                      <ul>
+                        <li>Name        : ${result["dataValues"]["name"]}</li>
+                        <li>Category    : ${
+                          result["dataValues"]["category"]
+                        }</li>
+                        <li>Description : ${
+                          result["dataValues"]["description"]
+                        }</li>
+                        <li>Location    : ${
+                          result["dataValues"]["location"]
+                        }</li>
+                        <li>Date/Time   : ${moment_timezone(result.date_time)
+                          .tz("Asia/Jakarta")
+                          .format("l")}</li>
+                      </ul>
+                      <p>Remember to invite your friends and wait patiently :)</p>
+                    </div>
+                    <img src="https://k-temuan.herokuapp.com/public/logo.png" alt="Footer Logo" style="width:100%">
+                    </div>       
+                   `,
+                      company: "K-temuan",
+                      sendername: "K-temuan Reminder Bot",
+                    });
+                    res.status(201).json({
+                      event: result,
+                    });
+                  })
+                  .catch(next);
               })
               .catch(next);
           })
