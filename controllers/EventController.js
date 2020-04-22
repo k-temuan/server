@@ -3,6 +3,9 @@ const { Event, User, Tag, EventTag, Attendee } = require("../models");
 class EventController {
   static findAll(req, res, next) {
     Event.findAll({
+      where: {
+        status: true,
+      },
       include: [
         {
           model: User,
