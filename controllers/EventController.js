@@ -254,7 +254,7 @@ class EventController {
                     include: [
                       {
                         model: EventTag,
-                        include: [{ model: Tag }],
+                        include: [{ model: Tag }, Attendee, User],
                       },
                     ],
                   })
@@ -305,7 +305,7 @@ class EventController {
                     include: [
                       {
                         model: EventTag,
-                        include: [{ model: Tag }],
+                        include: [{ model: Tag }, Attendee, User],
                       },
                     ],
                   })
