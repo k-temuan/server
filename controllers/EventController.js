@@ -14,11 +14,11 @@ class EventController {
       include: [
         {
           model: User,
+          order: [["date_time", "DESC"]],
           attributes: ["id", "firstname", "lastname", "email", "photo_url"],
         },
         {
           model: EventTag,
-          order: [["date_time", "DESC"]],
           attributes: ["id", "EventId", "TagId"],
           include: [
             {
