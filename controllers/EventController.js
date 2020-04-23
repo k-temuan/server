@@ -11,10 +11,10 @@ class EventController {
       where: {
         status: true,
       },
+      order: [["date_time", "DESC"]],
       include: [
         {
           model: User,
-          order: [["date_time", "DESC"]],
           attributes: ["id", "firstname", "lastname", "email", "photo_url"],
         },
         {
