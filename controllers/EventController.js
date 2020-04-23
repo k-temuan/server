@@ -11,7 +11,7 @@ class EventController {
       where: {
         status: true,
       },
-      order: [["date_time", "DESC"]],
+      order: [["date_time", "ASC"]],
       include: [
         {
           model: User,
