@@ -109,7 +109,7 @@ const start = async () => {
       // THIS IS THE COMPARED DATE",
       // comparedEventDate : ${comparedEventDate}
       // `);
-      if (status && tempDate > comparedEventDate) {
+      if (status && tempDate < comparedEventDate) {
         // change status to false
         console.log(`
         ------------------------------------
