@@ -4,7 +4,7 @@ const { sequelize } = require("../models");
 const { queryInterface } = sequelize;
 
 let UserId;
-let access_token;
+let access_token;z
 
 describe("User routes", () => {
   afterAll((done) => {

@@ -134,7 +134,7 @@ class AttendeeController {
       include: [Event, User],
     })
       .then(({ Event, User }) => {
-        let tempLocation = JSON.parse(Event["dataValues"]["location"]);
+        // let tempLocation = JSON.parse(Event["dataValues"]["location"]);
         sendEmail.post("/mail", {
           to: User["dataValues"]["email"],
           subject: `You just joined a new Event`,
@@ -150,7 +150,6 @@ class AttendeeController {
               <li>Name        : ${Event["dataValues"]["name"]}</li>
               <li>Category    : ${Event["dataValues"]["category"]}</li>
               <li>Description : ${Event["dataValues"]["description"]}</li>
-              <li>Location    : ${tempLocation["name"]}</li>
               <li>Date/Time   : ${moment_timezone(Event.date_time)
                 .tz("Asia/Jakarta")
                 .format("l")}</li>
