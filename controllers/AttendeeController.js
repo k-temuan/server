@@ -139,7 +139,6 @@ class AttendeeController {
           subject: `You just joined a new Event`,
           html: `
           <div style="box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); transition: 0.3s;">
-            <img src="${Event.image_url}" alt="Event image" style="width:100%">
           <div style="padding: 2px 16px;">
             <h2><b>${User["dataValues"]["firstname"]} ${
             User["dataValues"]["lastname"]
@@ -150,7 +149,7 @@ class AttendeeController {
               <li>Name        : ${Event["dataValues"]["name"]}</li>
               <li>Category    : ${Event["dataValues"]["category"]}</li>
               <li>Description : ${Event["dataValues"]["description"]}</li>
-              <li>Location    : ${Event["dataValues"]["location"]}</li>
+              <li>Location    : ${Event["dataValues"]["location"]["name"]}</li>
               <li>Date/Time   : ${moment_timezone(Event.date_time)
                 .tz("Asia/Jakarta")
                 .format("l")}</li>
