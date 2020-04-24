@@ -38,6 +38,7 @@ const start = async () => {
         UserId,
         message: `There is ${Event.name} event on ${Event.date_time} at ${Event.location}`,
       });
+      let tempLocation = JSON.parse(Event["dataValues"]["location"]);
       sendEmail.post("/mail", {
         to: User["dataValues"]["email"],
         subject: `Reminder regarding your upcoming event`,
@@ -51,7 +52,7 @@ const start = async () => {
             <li>Name        : ${Event["dataValues"]["name"]}</li>
             <li>Category    : ${Event["dataValues"]["category"]}</li>
             <li>Description : ${Event["dataValues"]["description"]}</li>
-            <li>Location    : ${Event["dataValues"]["location"]["name"]}</li>
+            <li>Location    : ${tempLocation["name"]}</li>
             <li>Date/Time   : ${tempEventDate}</li>
           </ul>
           <p>Remember to have fun and make new friends :)</p>

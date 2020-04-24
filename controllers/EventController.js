@@ -105,6 +105,9 @@ class EventController {
                 })
                   .then((result) => {
                     // send email here
+                    let tempLocation = JSON.parse(
+                      result["dataValues"]["location"]
+                    );
                     sendEmail.post("/mail", {
                       to: userData["dataValues"]["email"],
                       subject: `You just created a new Event`,
@@ -125,9 +128,7 @@ class EventController {
                         <li>Description : ${
                           result["dataValues"]["description"]
                         }</li>
-                        <li>Location    : ${
-                          result["dataValues"]["location"]["name"]
-                        }</li>
+                        <li>Location    : ${tempLocation["name"]}</li>
                         <li>Date/Time   : ${moment_timezone(result.date_time)
                           .tz("Asia/Jakarta")
                           .format("l")}</li>
